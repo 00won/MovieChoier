@@ -1,20 +1,29 @@
-import torch
-import torch.nn as nn
+import openai
 
+#테스트
+#from flask import Flask, render_template, request, jsonify
 
-class NeuralNet(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
-        super(NeuralNet, self).__init__()
-        self.l1 = nn.Linear(input_size, hidden_size) 
-        self.l2 = nn.Linear(hidden_size, hidden_size) 
-        self.l3 = nn.Linear(hidden_size, num_classes)
-        self.relu = nn.ReLU()
-    
-    def forward(self, x):
-        out = self.l1(x)
-        out = self.relu(out)
-        out = self.l2(out)
-        out = self.relu(out)
-        out = self.l3(out)
-        # no activation and no softmax at the end
-        return out
+openai.api_key = 'OpenAI api 추가'
+
+class chatAI():
+    def __init__(self):
+      self.initialize()
+
+    def initialize(self, ):
+        self.messages = []
+
+    def reply(self, message):
+        prompt_additions = ''
+
+        self.messages.append({'role': 'user', 'content': message})
+        self.messages.append({'role': 'system', 'content': prompt_additions})
+
+        chatAnswer = openai.ChatCompletion.create( 
+            model="gpt-3.5-turbo",
+            messages=self.messages
+            )
+        
+        result = chatAnswer.choices[0].message.content
+        self.messages.append({"role": "assistant", "content": result})
+
+        return result
