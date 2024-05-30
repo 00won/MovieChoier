@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-import model
+from model import chatAI
 
 
 app = Flask(__name__)
+
+chatbot = chatAI()
 
 def chat_reply(message):
       return model.chatAI().reply(message)
@@ -14,11 +16,7 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    text = request.get_json('message')
-    print(text)
-    msg = text['message']
-    print(msg)
-    reply = chat_reply(msg)
+    reply = chatbot.reply(request.json['message'])
     print(reply)
     massage = {'answer': reply}
     return jsonify(massage)
